@@ -2,6 +2,10 @@ package cl.globallogic.earthquake.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+
+@JsonFilter("ResponseFilter")
 public class Response {
 
 	String type;
