@@ -2,12 +2,10 @@ package cl.globallogic.earthquake.rest.client;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import org.jboss.logging.Property;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -30,6 +28,8 @@ public class EarthquakeRestClient {
 	@Value("${url.date}")
 	private String dateURL;
 
+	@Value("${url.basic}")
+	private String basicURL;
 
 	/**
 	 * Gets the earth quakes by magnitude.
@@ -42,7 +42,6 @@ public class EarthquakeRestClient {
 			
 	RestTemplate restTemplate = new RestTemplate();
 	Response response = new Response();
-	System.out.println(String.format(magnitudeURL,minMagnitude,maxMagnitude));
 	try {
 		response = restTemplate.getForObject(String.format(magnitudeURL,minMagnitude,maxMagnitude), Response.class);
 	}
@@ -126,5 +125,29 @@ public class EarthquakeRestClient {
 		
 		return response;
 	}
+	
+	
+	public Response getEarthquakesByCountry(String country) {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		Response response=restTemplate.getForObject(basicURL, Response.class);
+		response.setFeatures(response.getFeatures().stream().filter(feature-> feature.getProperties().getPlace().toUpperCase().contains(country.toUpperCase())).collect(Collectors.toList()));
+		response.setMetadata(response.getMetadata());
+		response.getMetadata().setCount(response.getFeatures().size());
+		
+		return response;
+	}
+	
+	public Response getEarthquakesByCountryAndDate(String country, LocalDate startTime, LocalDate endTime) {
+		
+		Response response= getEarthQuakesByDate(startTime,endTime);
+		
+		response.setFeatures(response.getFeatures().stream().filter(feature-> feature.getProperties().getPlace().toUpperCase().contains(country.toUpperCase())).collect(Collectors.toList()));
+        response.setMetadata(response.getMetadata());
+		response.getMetadata().setCount(response.getFeatures().size());
+		
+		return response;
+	}
+	
 
 }

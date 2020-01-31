@@ -27,13 +27,25 @@ import cl.globallogic.earthquake.model.Response;
 import cl.globallogic.earthquake.rest.client.EarthquakeRestClient;
 import io.swagger.annotations.ApiModelProperty;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EarthquakeController.
+ */
 @RestController
 public class EarthquakeController {
 	
+	/** The rest client. */
 	@Autowired
 	EarthquakeRestClient restClient;
 	
 	
+	/**
+	 * Retrieve earthquakes by magnitude.
+	 *
+	 * @param minMagnitude the min magnitude
+	 * @param maxMagnitude the max magnitude
+	 * @return the mapping jackson value
+	 */
 	@GetMapping("/earthquakes")
 	public MappingJacksonValue retrieveEarthquakesByMagnitude(
 			@RequestParam 
@@ -52,6 +64,13 @@ public class EarthquakeController {
 		return mapping;
 	}
 	
+	/**
+	 * Retrieve earthquakes by date.
+	 *
+	 * @param startTime the start time
+	 * @param endTime the end time
+	 * @return the mapping jackson value
+	 */
 	@GetMapping("/earthquakes/date")
 	public MappingJacksonValue retrieveEarthquakesByDate(
 			@Valid
@@ -74,6 +93,15 @@ public class EarthquakeController {
 	}
 
 	
+	/**
+	 * Retrieve earthquakes by date ranges.
+	 *
+	 * @param startTime the start time
+	 * @param endTime the end time
+	 * @param startTime2 the start time 2
+	 * @param endTime2 the end time 2
+	 * @return the mapping jackson value
+	 */
 	@GetMapping("/earthquakes/dates")
 	public MappingJacksonValue retrieveEarthquakesByDateRanges(
 			@Valid
@@ -98,6 +126,66 @@ public class EarthquakeController {
 		FilterProvider filters = new SimpleFilterProvider().addFilter("ResponseFilter", filter);
 		MappingJacksonValue mapping = new MappingJacksonValue(response);
 		mapping.setFilters(filters);
+		
+		return mapping;
+		
+	}
+	
+	/**
+	 * Retrieve earthquakes by country.
+	 *
+	 * @param country the country
+	 * @return the mapping jackson value
+	 */
+	@GetMapping("/earthquakes/countries")
+	public MappingJacksonValue retrieveEarthquakesByCountry(
+			@Valid
+			@RequestParam
+			String country
+			) {	
+
+	
+		Response response = restClient.getEarthquakesByCountry(country);
+		
+		SimpleBeanPropertyFilter filter =SimpleBeanPropertyFilter.filterOutAllExcept("metadata","features");
+		FilterProvider filters = new SimpleFilterProvider().addFilter("ResponseFilter", filter);
+		MappingJacksonValue mapping = new MappingJacksonValue(response);
+		mapping.setFilters(filters);
+		
+		return mapping;
+		
+	}
+	
+	
+	/**
+	 * Retrieve earthquakes by country and date.
+	 *
+	 * @param country the country
+	 * @param startTime the start time
+	 * @param endTime the end time
+	 * @return the mapping jackson value
+	 */
+	@GetMapping("/earthquakes/countries/dates")
+	public MappingJacksonValue retrieveEarthquakesByCountryAndDate(
+			@Valid
+			@RequestParam
+			String country,
+			@RequestParam("startTime") 
+			@DateTimeFormat(pattern = "yyyy-MM-dd") 
+			LocalDate startTime,
+			@Valid
+			@RequestParam("endTime") 
+			@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endTime
+			) {	
+
+	
+		Response response = restClient.getEarthquakesByCountryAndDate(country, startTime, endTime);
+		
+		SimpleBeanPropertyFilter filter =SimpleBeanPropertyFilter.filterOutAllExcept("metadata","features");
+		FilterProvider filters = new SimpleFilterProvider().addFilter("ResponseFilter", filter);
+		MappingJacksonValue mapping = new MappingJacksonValue(response);
+		mapping.setFilters(filters);
+		
 		
 		return mapping;
 		
