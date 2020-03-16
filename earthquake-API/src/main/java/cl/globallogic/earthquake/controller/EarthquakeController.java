@@ -60,7 +60,7 @@ public class EarthquakeController {
 		FilterProvider filters = new SimpleFilterProvider().addFilter("ResponseFilter", filter);
 		MappingJacksonValue mapping = new MappingJacksonValue(response);
 		mapping.setFilters(filters);
-		
+
 		return mapping;
 	}
 	

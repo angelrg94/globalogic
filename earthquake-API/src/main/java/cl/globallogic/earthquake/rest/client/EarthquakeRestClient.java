@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+
 import cl.globallogic.earthquake.exception.InternalErrorException;
 import cl.globallogic.earthquake.model.Feature;
 import cl.globallogic.earthquake.model.Response;
@@ -52,7 +53,11 @@ public class EarthquakeRestClient {
 	}
 	
 
-	
+	public Response defaultError() {
+		Response response = new Response();
+		System.out.println("Default");
+		return response;
+	}
 	/**
 	 * Gets the earth quakes by date.
 	 *
