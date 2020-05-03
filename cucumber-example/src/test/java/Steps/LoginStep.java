@@ -1,3 +1,5 @@
+package Steps;
+
 import cl.globallogic.User;
 import io.cucumber.core.api.TypeRegistry;
 import io.cucumber.core.api.TypeRegistryConfigurer;
